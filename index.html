@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>単語カードアプリ</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    .hidden {
+      display: none;
+    }
+    button {
+      margin: 5px;
+      padding: 10px;
+      font-size: 16px;
+      background-color: #f0f0f0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #e0e0e0;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      margin: 5px 0;
+    }
+    a {
+      text-decoration: none;
+      color: blue;
+      cursor: pointer;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    .word-item {
+      margin: 5px 0;
+    }
+    .word-item .question {
+      color: #99ccff; /* 薄い青色 */
+      font-weight: bold;
+    }
+    .word-item .answer {
+      color: #ff9999; /* さらに薄い赤色 */
+      font-weight: bold;
+    }
+    .word-item .stats {
+      margin-left: 10px;
+    }
+    .test-choice {
+      display: block;
+      width: 100%;
+      padding: 15px;
+      margin: 10px 0;
+      font-size: 18px;
+      text-align: center;
+      background-color: #f0f0f0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .test-choice:hover {
+      background-color: #e0e0e0;
+    }
+    #question {
+      text-align: center;
+      font-size: 24px;
+      margin: 20px 0;
+    }
+    #testEndMessage {
+      text-align: center;
+      font-size: 20px;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 5px;
+    }
+    .perfect {
+      background-color: #4caf50;
+      border: 1px solid #388e3c;
+      color: white;
+    }
+    .success {
+      background-color: #dff0d8;
+      border: 1px solid #d6e9c6;
+      color: #3c763d;
+    }
+    .warning {
+      background-color: #fcf8e3;
+      border: 1px solid #faebcc;
+      color: #8a6d3b;
+    }
+    .danger {
+      background-color: #f2dede;
+      border: 1px solid #ebccd1;
+      color: #a94442;
+    }
+    #importAll {
+      display: none; /* ファイル選択ボタンを隠す */
+    }
+  </style>
+</head>
+<body>
+  <h1>単語カードアプリ</h1>
+  <div id="app">
+    <!-- 単語帳管理モード -->
+    <div id="wordBookManager">
+      <h2>単語帳管理</h2>
+      <button id="createWordBook">単語帳を作成</button>
+      <ul id="wordBookList"></ul>
+      <button id="exportAll">全体をエクスポート</button>
+      <button id="importAllButton">全体をインポート</button>
+      <input type="file" id="importAll" />
+    </div>
+
+    <!-- 単語帳モード -->
+    <div id="wordBookMode" class="hidden">
+      <h2 id="wordBookTitle"></h2>
+      <button id="backToManager">戻る</button>
+      <div>
+        <input type="text" id="wordInput" placeholder="単語を入力" />
+        <input type="text" id="meaningInput" placeholder="意味を入力" />
+        <button id="addWord">登録</button>
+      </div>
+      <ul id="wordList"></ul>
+      <div>
+        <label for="testOrder">テスト順序:</label>
+        <select id="testOrder">
+          <option value="order">順序通り</option>
+          <option value="lowRate">正答率が低い順</option>
+          <option value="random">ランダム</option>
+        </select>
+        <label for="testMode">テストモード:</label>
+        <select id="testModeSelect">
+          <option value="wordToMeaning">単語→意味</option>
+          <option value="meaningToWord">意味→単語</option>
+        </select>
+        <label for="testCondition">テスト条件:</label>
+        <select id="testCondition">
+          <option value="none">条件なし</option>
+          <option value="correctCountLessThan">正答数がN回未満</option>
+          <option value="wrongCountMoreThan">誤答数がN回以上</option>
+          <option value="rate0to50">正答率が0%～50%</option>
+          <option value="rate50to80">正答率が50%～80%</option>
+          <option value="rate80to100">正答率が80%～100%</option>
+        </select>
+        <input type="number" id="conditionValue" placeholder="Nを入力" class="hidden" />
+        <button id="startTest">テストを開始</button>
+        <button id="resetCorrectCount">正答数をクリア</button>
+      </div>
+    </div>
+
+    <!-- テストモード -->
+    <div id="testMode" class="hidden">
+      <h2>テストモード</h2>
+      <div id="question"></div>
+      <div id="choices"></div>
+      <div id="testEndMessage" class="hidden"></div>
+      <button id="endTest">テストを終了</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
+
