@@ -242,5 +242,52 @@ document.getElementById('backToManager').addEventListener('click', () => {
   document.getElementById('wordBookManager').classList.remove('hidden'); // 単語帳管理モードを表示
 });
 
-renderWordBookList();
+// エクスポートボタンのクリックイベント
+document.getElementById('exportAll').addEventListener('click', () => {
+  const data = getData(); // ローカルストレージからデータを取得
+  const jsonData = JSON.stringify(data, null, 2); // JSON形式に変換（整形付き）
+  const blob = new Blob([jsonData], { type: 'application/json' }); // JSONデータをBlobに変換
+  const url = URL.createObjectURL(blob); // Blobからダウンロード用のURLを作成
 
+  // ダウンロードリンクを作成してクリック
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'wordCardData.json'; // ダウンロードするファイル名
+  a.click();
+
+  // URLを解放
+  URL.revokeObjectURL(url);
+});
+
+// インポートボタンのクリックイベント
+document.getElementById('importAllButton').addEventListener('click', () => {
+  document.getElementById('importAll').click(); // ファイル選択ダイアログを開く
+});
+
+// ファイルが選択されたときの処理
+document.getElementById('importAll').addEventListener('change', (event) => {
+  const file = event.target.files[0];
+  if (!file) {
+    alert('ファイルが選択されていません。');
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const importedData = JSON.parse(e.target.result); // ファイル内容をJSONとして読み込む
+      if (importedData && importedData.wordBooks) {
+        localStorage.setItem('wordCardApp', JSON.stringify(importedData)); // ローカルストレージに保存
+        alert('データをインポートしました。');
+        renderWordBookList(); // 単語帳リストを再描画
+      } else {
+        alert('無効なデータ形式です。');
+      }
+    } catch (error) {
+      alert('ファイルの読み込み中にエラーが発生しました。');
+    }
+  };
+  reader.readAsText(file); // ファイルをテキストとして読み込む
+});
+
+renderWordBookList();
